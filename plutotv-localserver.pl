@@ -25,6 +25,7 @@ use open qw(:std :utf8);
 
 my $hostIp = "127.0.0.1";
 my $port = "9000";
+my address = "http://$hostIp:$port";
 my $apiUrl = "http://api.pluto.tv/v2/channels";
 my $deviceId = uuid_to_string(create_uuid(UUID_V1));
 my $ffmpeg = which 'ffmpeg';
