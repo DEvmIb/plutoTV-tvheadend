@@ -155,7 +155,7 @@ sub buildM3uLegacy {
                 "--hls-live-restart --url \"$url\"\n";
         } else {
             $m3u .= "pipe://$ffmpeg -loglevel fatal -threads 0 -nostdin -re " .
-                "-i \"http://$hostIp:$port/master3u8?id=$id\" " .
+                "-i \"$address/master3u8?id=$id\" " .
                 "-c copy -vcodec copy -acodec copy -mpegts_copyts 1 -f mpegts " .
                 "-tune zerolatency -mpegts_service_type advanced_codec_digital_hdtv " .
                 "-metadata service_name=\"$name\" pipe:1\n";
@@ -176,7 +176,7 @@ sub buildM3uDirect {
         my $id = $channel->{_id};
         $m3u .= "#EXTINF:-1 tvg-chno=\"$number\" tvg-id=\"" . uri_escape_utf8($name) .
             "\" tvg-name=\"$name\" tvg-logo=\"$logo\" group-title=\"PlutoTV\",$name\n";
-        $m3u .= "http://$hostIp:$port/stream/$id.m3u8\n";
+        $m3u .= "$address/stream/$id.m3u8\n";
     }
     return $m3u;
 }
@@ -330,7 +330,7 @@ sub createDynamicPlaylist {
     $dynamicPlaylist .= "#EXT-X-MEDIA-SEQUENCE:0\n";
     $dynamicPlaylist .= "#EXT-X-PLAYLIST-TYPE:EVENT\n";
     $dynamicPlaylist .= "#EXTINF:86400.0,\n";
-    $dynamicPlaylist .= "http://$hostIp:$port/dynamic_stream/$channelId.ts\n";
+    $dynamicPlaylist .= "$address/dynamic_stream/$channelId.ts\n";
     $dynamicPlaylist .= "#EXT-X-ENDLIST\n";
     return $dynamicPlaylist;
 }
@@ -840,6 +840,12 @@ if (!$localhost) {
 
 if (defined(getArgsValue("--port"))) {
     $port = getArgsValue("--port");
+}
+
+if (defined(getArgsValue("--address"))) {
+    $address = getArgsValue("--address");
+} else {
+    $address = "http://$hostIp:$port";
 }
 
 my $daemon = HTTP::Daemon->new(
